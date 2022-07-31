@@ -1,49 +1,67 @@
-import type { NextPage } from 'next';
-import Head from 'next/head';
+import { GetStaticProps, NextPage } from 'next';
 import Link from 'next/link';
 
-const Home: NextPage = () => {
+interface Post {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+}
+
+interface User {
+  id: number;
+  name: string;
+}
+
+interface PageProps {
+  posts: Post[];
+}
+
+const Posts = ({ posts }: PageProps) => {
   return (
-    <>
-      <Head>
-        <title>NextJS Blog Demo</title>
-        <meta name="description" content="NextJS Blog Demo" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <div
+    <div className="container">
+      <h1>Posts</h1>
+      <ul
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: '100vh'
+          listStyle: 'none',
+          margin: 0,
+          padding: 0
         }}>
-        <div>
-          <h1
-            style={{
-              margin: '0 0 2rem'
-            }}>
-            NextJS Blog Demo
-          </h1>
-          <Link href="/posts" passHref>
-            <a
+        {posts.map((post) => {
+          return (
+            <li
+              key={post.id}
               style={{
-                color: '#fff',
-                fontWeight: 700,
-                background: '#078f9c',
-                padding: '1.2rem',
-                borderRadius: '8px',
-                maxWidth: 200,
-                display: 'block',
-                textAlign: 'center',
-                margin: 'auto'
+                marginBottom: '1rem'
               }}>
-              See Posts
-            </a>
-          </Link>
-        </div>
-      </div>
-    </>
+              <Link href={`/posts/${post.id}`} passHref>
+                <a
+                  className="link"
+                  style={{
+                    fontSize: '2rem',
+                    fontWeight: 700,
+                    textDecoration: 'underline'
+                  }}>
+                  {post.title}
+                </a>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 };
 
-export default Home;
+export const getStaticProps: GetStaticProps = async () => {
+  const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+  const posts: Post[] = await response.json();
+
+  return {
+    props: {
+      posts
+    }
+  };
+};
+
+export default Posts;

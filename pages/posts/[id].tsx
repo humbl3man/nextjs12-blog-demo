@@ -26,7 +26,7 @@ const Post = ({ post, author }: PageProps) => {
           marginTop: '2rem',
           marginBottom: '1rem'
         }}>
-        <Link href="/posts" passHref>
+        <Link href="/" passHref>
           <a
             className="link"
             style={{
